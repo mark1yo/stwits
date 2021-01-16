@@ -8,7 +8,7 @@ with open('HISTORY.md') as history_file:
 
 setup_args = dict(
     name='stwits',
-    version='1.0.0',
+    version='0.0.1',
     description='Python client for www.stocktwits.com API',
     long_description_content_type="text/markdown",
     long_description=README + '\n\n' + HISTORY,

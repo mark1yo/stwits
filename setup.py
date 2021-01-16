@@ -11,7 +11,7 @@ setup_args = dict(
     keywords=['Stock', 'Stocks', 'Twit', 'Twits', 'Tweet', 'Tweets', 'Stocktwits',
               'Stocktwits.com', 'www.Stocktwits.com', 'finance', 'Investing', 'Trading', 
               'Bonds', 'Equities', 'Funds', 'Securities', 'Commodities', 'Crypto'],
-    install_requires = ['requests', 'datetime', 'json'],
+    install_requires = ['requests'],
     url='https://github.com/mark1yo/stwits',
     download_url='https://pypi.org/project/stwits/'
 )

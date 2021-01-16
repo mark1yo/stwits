@@ -3,7 +3,7 @@ from distutils.core import setup
 setup_args = dict(
     name='stwits',
     description='Python client for www.stocktwits.com API',
-    version='0.0.1',
+    version='0.1',
     license='MIT',
     author='Mark Yosef Joseph',
     author_email='markio@post.bgu.ac.il',

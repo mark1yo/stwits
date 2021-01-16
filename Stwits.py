@@ -3,13 +3,10 @@ import requests
 from datetime import date
 
 
-class StocktwitsAPI:
+class Stwits:
     '''
     Python client package for Stocktwits API - https://api.stocktwits.com/developers/docs/api \n
-    Author: `Mark Yosef Joseph` \n
-    GitHub: https://github.com/mark1yo/stwits \n
-    License: `MIT` \n
-    \----- \n
+
     Supported APIs: \n
     - Sync
     - Streams 
@@ -18,14 +15,19 @@ class StocktwitsAPI:
 
     Unsupported APIs: \n
     - Search, Messages, Graph, Friendships, Blocks, Mutes, Account, Deletions
-    \----- \n
+
+    ##### \n
     1 - This python package is NOT an official package of www.stocktwits.com
     2 - Only NON-partner level APIs are supported
     3 - Authentication is required to use this API due to rate and functioanality limits
     How to get an access token and use this API tutorial:
     4 - Visit the official API site for more information about: \n
     API Methods, Authentication, Rate Limiting, Parameters, Responses, Error Codes, etc \n
-    https://api.stocktwits.com/developers/docs/api
+
+    ##### \n
+    Author: `Mark Yosef Joseph` \n
+    GitHub: https://github.com/mark1yo/stwits \n
+    License: `MIT` \n
     '''
 
     def __init__(self, access_token: str):
@@ -52,16 +54,16 @@ class StocktwitsAPI:
     def sync_sectores_and_industries(self, csv_file_path: str):
         '''Download and save a .csv file with all the sectors and industries'''
         res = requests.get('https://api.stocktwits.com/sectors/StockTwits-sectors-industries.csv')
-        with open(csv_file_path, 'w') as file:
-            file.write(res.content)
+        with open(csv_file_path, 'w+') as file:
+            file.write(res.text)
 
     
     def sync_symbols(self, csv_file_path: str):
         '''Download and save a .csv file with all stocktwits symbols/tickers (Updated daily).'''
         today = date.today().strftime('%Y-%m-%d') 
         res = requests.get(f'https://api.stocktwits.com/symbol-sync/{today}.csv')
-        with open(csv_file_path, 'w') as file:
-            file.write(res.content)
+        with open(csv_file_path, 'w+') as file:
+            file.write(res.text)
 
     # Streams
     def stream_user(self, user: str, since: int = 0, maximum: int = 0, limit: int = 30) -> list:
@@ -89,7 +91,7 @@ class StocktwitsAPI:
         return res['messages']
 
     # WatchLists
-    def watchlists(self) -> list[tuple]:
+    def watchlists(self) -> list:
         '''Returns a list of private watch lists for the authenticating user.'''
         res = self.__get_req__(f'watchlists')
         return [(int(x['id']), x['name']) for x in res['watchlists']]
@@ -99,7 +101,7 @@ class StocktwitsAPI:
         res = self.__post_req__(f'watchlists/create', name=name)
         return int(res['watchlist']['id'])
 
-    def watchlist_update(self, watchlist_id: int, new_name: str) -> list[tuple]:
+    def watchlist_rename(self, watchlist_id: int, new_name: str) -> list:
         '''Update the name of the specified watch list.'''
         res = self.__post_req__(
             f'watchlists/update/{watchlist_id}', name=new_name)
@@ -110,30 +112,30 @@ class StocktwitsAPI:
         res = self.__post_req__(f'watchlists/destroy/{watchlist_id}')
         return int(res['watchlist']['id'])
 
-    def watchlist_show_symbols(self, watchlist_id: int) -> list[str]:
+    def watchlist_show_symbols(self, watchlist_id: int) -> list:
         '''Returns the the list of ticker symbols in a specified watch list for the authenticating user.'''
         res = self.__get_req__(f'watchlists/show/{watchlist_id}')
         return [str(x['symbol']) for x in res['watchlist']['symbols']]
 
-    def watchlist_add_symbols(self, watchlist_id: int, symbols: str):
+    def watchlist_add_symbols(self, watchlist_id: int, symbols: list):
         '''Add a ticker symbol or list of symbols to a specified watch list.'''
         self.__post_req__(
-            f'watchlists/{watchlist_id}/symbols/create', symbols=symbols)
+            f'watchlists/{watchlist_id}/symbols/create', symbols=','.join(symbols))
 
-    def watchlist_remove_symbols(self, watchlist_id: int, symbols: str):
+    def watchlist_remove_symbols(self, watchlist_id: int, symbols: list):
         '''Remove a symbol or list of symbols from the specified watch list.'''
         self.__post_req__(
-            f'watchlists/{watchlist_id}/symbols/destroy', symbols=symbols)
+            f'watchlists/{watchlist_id}/symbols/destroy', symbols=','.join(symbols))
 
     # Trending
-    def trending_symbols(self) -> list[tuple]:
+    def trending_symbols(self) -> list:
         '''Returns a list of all the trending symbols at the moment requested. 
         Trending symbols include equties and non-equities like futures and forex. 
         These are updated in 5-minute intervals.'''
         res = self.__get_req__(f'trending/symbols')
         return [(x['symbol'], x['title']) for x in res['symbols']]
 
-    def trending_equities(self) -> list[tuple]:
+    def trending_equities(self) -> list:
         '''Returns a list of all the trending equity symbols at the moment requested. 
         Trending equities have to have a price over $5. 
         These are updated in 5 minute intervals.'''

@@ -57,7 +57,6 @@ class Stwits:
         with open(csv_file_path, 'w+') as file:
             file.write(res.text)
 
-    
     def sync_symbols(self, csv_file_path: str):
         '''Download and save a .csv file with all stocktwits symbols/tickers (Updated daily).'''
         today = date.today().strftime('%Y-%m-%d') 
